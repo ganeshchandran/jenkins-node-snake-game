@@ -3,18 +3,18 @@ pipeline {
     agent any
 
     stages {   
-	stage('WS-Cleanup') {
+	stage('Workspace Cleanup') {
             steps {
 		    cleanWs()
             }
         }
-        stage('Checkout') {
+        stage('Git Checkout') {
             steps {
 		    git branch: 'main', url: 'https://github.com/ganeshchandran/jenkins-node-snake-game.git'
             }
         }
         
-        stage('AppTest') {
+        stage('Code Analysis') {
             steps {
                 dir('code') {
                 sh 'npm install'    
@@ -23,7 +23,13 @@ pipeline {
             }
         }
         
-        stage('WebTest') {
+        stage('SAST Analysis') {
+            steps {
+		    sh 'sudo docker exec -i -w /usr/src/jenkins/workspace/snake-multiplayer/code nodejsscan nodejsscan .'
+            }
+        }
+        
+        stage('App Test') {
             steps {
                 dir('code') {
                 
@@ -36,6 +42,8 @@ pipeline {
             }
             
         }
+        
+        
         
         
         

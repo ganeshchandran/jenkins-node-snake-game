@@ -53,10 +53,7 @@ pipeline {
 			            dockerImage = docker.build "registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER"
 		    	        dockerImage.push()
 			            }
-			            //sh "docker rmi registry.hub.docker.com/ganeshchandran/jenkin-pipeline:$BUILD_NUMBER-${params.BRANCH}"
-			            //sh "sed -i s/jenkin-pipeline:build-number/jenkin-pipeline:$BUILD_NUMBER-${params.BRANCH}/g jenkins-deployment.yaml"
-			            //sh "sed -i s/namespace-value/${params.ENVIRONMENT}/g jenkins-deployment.yaml"
-                        //sh "sed -i s/namespace-value/${params.ENVIRONMENT}/g jenkins-deployment-service.yaml"
+			            sh 'sed -i s/multiplayer-snake-game/multiplayer-snake-game:$BUILD_NUMBER/g docker-compose.yaml'
 		                }
                     }
         }
@@ -67,11 +64,20 @@ pipeline {
                         sh 'mkdir -p var/lib/jenkins/.docker'
                         sh 'cp -f $dockerhubconfig /var/lib/jenkins/.docker/config.json'
                         sh 'docker scan registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER --accept-license --json'
+                        sleep 10
+                        sh 'docker rmi registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER'
                     }
             }
         }
         
-        
+        stage('Web Deployment') {
+            steps {
+                dir('ansible') {
+                sh 'ansible-playbook deployment.yaml'
+                }
+            }
+            
+        }
         
         
         

@@ -1,0 +1,10 @@
+version: "2.4"
+services:
+  sonarqube:
+    image: registry.hub.docker.com/ganeshchandran/multiplayer-snake-game
+    container_name: snake-game
+    restart: always
+    expose:
+        - "3000"
+    ports:
+        - "8085:3000"

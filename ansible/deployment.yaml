@@ -1,0 +1,12 @@
+- hosts: web
+  name: WebServer Setup
+  become: yes
+  tasks:
+    - name: Stopping Container
+      command: docker-compose -f /home/ganesh/docker-compose.yaml down
+    - name: Copy DockerCompose File
+      ansible.builtin.copy:
+        src: ../docker-compose.yaml
+        dest: /home/ganesh
+    - name: Starting Container
+      command: docker-compose -f /home/ganesh/docker-compose.yaml up -d

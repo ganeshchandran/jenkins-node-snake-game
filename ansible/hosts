@@ -1,0 +1,8 @@
+[web]
+10.128.0.6 
+10.128.0.7
+
+
+[web:vars]
+ansible_ssh_private_key_file = /var/lib/jenkins/.ssh/web.pem
+ansible_ssh_user=ganesh

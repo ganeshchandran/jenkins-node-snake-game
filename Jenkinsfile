@@ -1,8 +1,9 @@
 pipeline {
     
     agent any
-
-    stages {   
+    
+    stages {
+        
 	stage('Workspace Cleanup') {
             steps {
 		    cleanWs()
@@ -63,7 +64,7 @@ pipeline {
 		            withCredentials([file(credentialsId: 'dockerhub-credential', variable: 'dockerhubconfig')]) {
                         sh 'mkdir -p var/lib/jenkins/.docker'
                         sh 'cp -f $dockerhubconfig /var/lib/jenkins/.docker/config.json'
-                        sh 'docker scan registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER --accept-license --json'
+                        //sh 'docker scan registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER --accept-license --json'
                         sleep 10
                         sh 'docker rmi registry.hub.docker.com/ganeshchandran/multiplayer-snake-game:$BUILD_NUMBER'
                     }
@@ -80,13 +81,12 @@ pipeline {
         }
         
         
+        stage('Email Notification') {
+            steps {
+                emailext attachLog: true, body: "Please find attached log for more details", subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", to: 'ganeshchandran90@gmail.com'
+            }
+        }
         
-	
-	
-        //stage('Email Notification') {
-        //    steps {
-        //        mail bcc: '', body: 'Jenkins Sample Email', cc: '', from: '', replyTo: '', subject: 'Jenkins Build Success', to: 'ganeshchandran@live.in'
-        //    }
-        //}
- }
- }
+    
+    }
+}
